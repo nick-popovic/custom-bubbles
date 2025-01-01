@@ -1,23 +1,27 @@
-package main //change accordingly
+package main
 
 import (
 	"fmt"
 	"os"
 
-	ui "github.com/nick-popovic/custom-bubbles/chatGPT"
-
 	tea "github.com/charmbracelet/bubbletea"
+	multitab "github.com/nick-popovic/custom-bubbles/multiTab"
 )
 
 // model is the top-level model for the application.
 type model struct {
-	gpt ui.ChatGPTdialogueWindow
+	tabs multitab.TabsModel
 }
 
 func New() model {
-	return model{
-		gpt: ui.NewGPTWindow(),
-	}
+	return model{tabs: *multitab.NewTabsModel(
+		[]multitab.TabModel{
+
+			// these functions are defined in tab1.go, tab2.go, and tab3.go
+			NewTab1(),
+			NewTab2(),
+			NewTab3()},
+		true)}
 }
 
 func (m model) Init() tea.Cmd {
@@ -33,21 +37,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c":
+		case "q":
 			return m, tea.Quit
-
+		case "u":
+			return m, tea.ClearScreen
 		}
 	}
 
 	// Update components
-	_, cmd = m.gpt.Update(msg)
+	_, cmd = m.tabs.Update(msg)
 	cmds = append(cmds, cmd)
 
 	return m, tea.Batch(cmds...)
 }
 
 func (m model) View() string {
-	return m.gpt.View()
+	return m.tabs.View() +
+		"\n\nPress left/right to switch tabs" +
+		"\nPress q to quit, i to add '<' to the active view."
 }
 
 func main() {
