@@ -1,6 +1,8 @@
-# ChatGPT Bubble Terminal Component
+# ChatGPT Bubble
 
-A ChatGPT interface Bubble using the Bubble Tea framework. This component provides an interactive chat window with markdown rendering support, and real-time streaming responses from OpenAI's GPT models.
+<img width="1200" src="./assets/demo.gif" />
+
+A ChatGPT interface Bubble using the Bubble Tea framework. This bubble provides an interactive chat window with markdown rendering support, and real-time streaming responses from OpenAI's GPT models.
 
 ## Features
 - Real-time streaming of ChatGPT responses
@@ -28,7 +30,7 @@ The component also supports markdown rendering of responses including:
 - Headers and emphasis
 
 ```go
-package main //change accordingly
+package main
 
 import (
 	"fmt"
