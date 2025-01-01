@@ -2,7 +2,6 @@ package candleStick
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -25,12 +24,12 @@ type Candlestick struct {
 }
 
 type Model struct {
-	candlesticks []Candlestick
+	Candlesticks []Candlestick
 	width        int
 	offset       int // Track scroll position
 }
 
-func generateSampleData() []Candlestick {
+func GenerateSampleData() []Candlestick {
 	startDate := time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC)
 	data := []Candlestick{
 		{Open: 100, High: 100, Low: 95, Close: 105, Timestamp: startDate},
@@ -102,7 +101,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.ClearScreen
 			}
 		case tea.MouseWheelDown:
-			if m.offset < len(m.candlesticks)-1 {
+			if m.offset < len(m.Candlesticks)-1 {
 				m.offset++
 				return m, tea.ClearScreen
 			}
@@ -120,13 +119,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	if len(m.candlesticks) == 0 {
+	if len(m.Candlesticks) == 0 {
 		return "No data to display\n"
 	}
 
 	// Find min, max values and calculate label width
-	minVal, maxVal := m.candlesticks[0].Low, m.candlesticks[0].High
-	for _, c := range m.candlesticks {
+	minVal, maxVal := m.Candlesticks[0].Low, m.Candlesticks[0].High
+	for _, c := range m.Candlesticks {
 		if c.Low < minVal {
 			minVal = c.Low
 		}
@@ -148,7 +147,7 @@ func (m Model) View() string {
 		price := maxVal - (valueRange * float64(i) / float64(height))
 		output += fmt.Sprintf(padding+" │", price)
 
-		for _, candle := range m.candlesticks {
+		for _, candle := range m.Candlesticks {
 			normalized := func(val float64) int {
 				return int(float64(height-1) * (maxVal - val) / valueRange)
 			}
@@ -175,22 +174,22 @@ func (m Model) View() string {
 
 	// Draw bottom axis with correct spacing
 	output += strings.Repeat(" ", labelWidth) + " └"
-	for i := 0; i < len(m.candlesticks); i++ {
+	for i := 0; i < len(m.Candlesticks); i++ {
 		output += "─────"
 	}
 	output += "\n"
 
 	// Add day numbers
 	output += strings.Repeat(" ", labelWidth) + "  "
-	for _, candle := range m.candlesticks {
+	for _, candle := range m.Candlesticks {
 		output += fmt.Sprintf(" %02d  ", candle.Timestamp.Day())
 	}
 	output += "\n"
 
 	// Add month labels where month changes
 	output += strings.Repeat(" ", labelWidth) + "  "
-	for i, candle := range m.candlesticks {
-		if i == 0 || candle.Timestamp.Month() != m.candlesticks[i-1].Timestamp.Month() {
+	for i, candle := range m.Candlesticks {
+		if i == 0 || candle.Timestamp.Month() != m.Candlesticks[i-1].Timestamp.Month() {
 			month := candle.Timestamp.Format("Jan")
 			output += fmt.Sprintf(" %s  ", month)
 			i += len(month) // Skip spaces for month name
@@ -201,25 +200,4 @@ func (m Model) View() string {
 	output += "\n"
 
 	return output
-}
-
-func main() {
-
-	m := Model{
-		candlesticks: generateSampleData(),
-	}
-
-	/*
-		m := model{
-			candlesticks: []Candlestick{},
-			width:        0,
-			offset:       0,
-		}
-	*/
-
-	p := tea.NewProgram(m)
-	if _, err := p.Run(); err != nil {
-		fmt.Println("Error running program:", err)
-		os.Exit(1)
-	}
 }
