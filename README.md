@@ -14,6 +14,14 @@ A collection of reusable Bubbles built with the [Bubble Tea](https://github.com/
 - [x] Testing and examples
 - [ ] verified import via `go get`
 
+## Installation
+
+```bash
+go get github.com/nick-popovic/custom-bubbles/multiTab
+go get github.com/nick-popovic/custom-bubbles/chatGPT
+go get github.com/nick-popovic/custom-bubbles/candleStick
+```
+
 ## Components
 
 ### ChatGPT Terminal Interface
